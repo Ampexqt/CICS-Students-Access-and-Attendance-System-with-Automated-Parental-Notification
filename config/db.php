@@ -14,10 +14,11 @@ try {
 
     // Set error reporting mode to Exception for debugging
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+    
     // Database connected successfully - no output needed for included files
 } catch (PDOException $e) {
     // Catch any connection errors
     die("❌ Connection failed: " . $e->getMessage());
+    
 }
 ?>
