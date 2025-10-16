@@ -26,10 +26,60 @@ const app = {
   },
   
   setupNavigation() {
-    document.getElementById('requests-toggle').addEventListener('click', (e) => {
+    const requestsToggle = document.getElementById('requests-toggle');
+    requestsToggle.addEventListener('click', (e) => {
       e.preventDefault();
       const submenu = document.getElementById('requests-submenu');
       submenu.classList.toggle('open');
+      requestsToggle.classList.toggle('open');
+    });
+
+    // Mobile menu functionality
+    this.setupMobileMenu();
+  },
+
+  setupMobileMenu() {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+    const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
+    const mobileRequestsToggle = document.getElementById('mobileRequestsToggle');
+    const mobileRequestsSubmenu = document.getElementById('mobileRequestsSubmenu');
+
+    // Open mobile menu
+    mobileMenuToggle.addEventListener('click', () => {
+      mobileMenu.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+
+    // Close mobile menu
+    const closeMobileMenu = () => {
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    };
+
+    mobileMenuClose.addEventListener('click', closeMobileMenu);
+    mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
+
+    // Mobile requests submenu toggle
+    mobileRequestsToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      mobileRequestsToggle.classList.toggle('open');
+      mobileRequestsSubmenu.classList.toggle('open');
+    });
+
+    // Close mobile menu when clicking on nav items
+    document.querySelectorAll('.mobile-nav-item[data-route]').forEach(item => {
+      item.addEventListener('click', () => {
+        closeMobileMenu();
+      });
+    });
+
+    // Handle escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        closeMobileMenu();
+      }
     });
   },
   
@@ -37,8 +87,8 @@ const app = {
     const hash = window.location.hash.slice(1) || '/';
     const route = this.routes[hash] || this.routes['/'];
     
-    // Update active nav links
-    document.querySelectorAll('.nav-link').forEach(link => {
+    // Update active nav links (both desktop and mobile)
+    document.querySelectorAll('.nav-link, .mobile-nav-item').forEach(link => {
       link.classList.remove('active');
       // Only highlight the exact route; don't also highlight the parent
       if (link.dataset.route === hash) {
@@ -46,9 +96,26 @@ const app = {
       }
     });
     
-    // Show/hide requests submenu
+    // Show/hide requests submenu (both desktop and mobile)
     if (hash.includes('/requests')) {
       document.getElementById('requests-submenu').classList.add('open');
+      document.getElementById('requests-toggle').classList.add('open');
+      const mobileRequestsSubmenu = document.getElementById('mobileRequestsSubmenu');
+      const mobileRequestsToggle = document.getElementById('mobileRequestsToggle');
+      if (mobileRequestsSubmenu && mobileRequestsToggle) {
+        mobileRequestsSubmenu.classList.add('open');
+        mobileRequestsToggle.classList.add('open');
+      }
+    } else {
+      // Close submenu when not on requests pages
+      document.getElementById('requests-submenu').classList.remove('open');
+      document.getElementById('requests-toggle').classList.remove('open');
+      const mobileRequestsSubmenu = document.getElementById('mobileRequestsSubmenu');
+      const mobileRequestsToggle = document.getElementById('mobileRequestsToggle');
+      if (mobileRequestsSubmenu && mobileRequestsToggle) {
+        mobileRequestsSubmenu.classList.remove('open');
+        mobileRequestsToggle.classList.remove('open');
+      }
     }
     
     // Update page title
