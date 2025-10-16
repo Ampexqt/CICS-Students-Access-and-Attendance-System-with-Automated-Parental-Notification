@@ -1,0 +1,160 @@
+/* ===== General Layout ===== */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat", sans-serif;
+    background: linear-gradient(to bottom, #1a3e6c, #436ea3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  
+  /* ===== Container ===== */
+  .container {
+    background-color: #fefffe;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  /* ===== Logos ===== */
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .logo-container img {
+    height: 80px;
+  }
+  
+  /* ===== Heading ===== */
+  h1 {
+    font-family: "Poppins", sans-serif;
+    font-size: 1.6rem;
+    color: #344142;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* ===== Form ===== */
+  .form-group {
+    text-align: left;
+    margin-bottom: 1rem;
+  }
+  
+  label {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #344142;
+  }
+  
+  input {
+    width: 100%;
+    padding: 0.6rem;
+    margin-top: 0.3rem;
+    border: 1px solid #436ea3;
+    border-radius: 6px;
+    font-family: "Montserrat", sans-serif;
+    outline: none;
+    transition: 0.2s ease;
+  }
+  
+  input:focus {
+    border-color: #1a3e6c;
+    box-shadow: 0 0 0 2px rgba(26, 62, 108, 0.2);
+  }
+  
+  /* ===== Password Wrapper ===== */
+  .password-wrapper {
+    position: relative;
+  }
+  
+  .password-wrapper button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #436ea3;
+    padding: 0;
+  }
+  
+  .password-wrapper button:hover {
+    color: #1a3e6c;
+  }
+  
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  /* ===== Buttons ===== */
+  .btn {
+    width: 100%;
+    padding: 0.7rem;
+    background: linear-gradient(to right, #1a3e6c, #436ea3);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .btn:hover {
+    background: linear-gradient(to right, #436ea3, #f0c75e);
+  }
+  
+  /* ===== Error Text ===== */
+  .error-text {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: none;
+  }
+  
+  /* ===== Links & Footer ===== */
+  .links {
+    margin-top: 1rem;
+  }
+  
+  .links a {
+    color: #436ea3;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  
+  .links a:hover {
+    color: #1a3e6c;
+  }
+  
+  footer {
+    border-top: 1px solid #ddd;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    font-size: 0.75rem;
+    color: #666;
+  }
+  
+  footer a {
+    color: #436ea3;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    color: #1a3e6c;
+  }
+  
