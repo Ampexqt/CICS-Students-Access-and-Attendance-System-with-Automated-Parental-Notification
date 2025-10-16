@@ -48,7 +48,7 @@
             <aside class="sidebar">
                 <div class="sidebar-header">
                     <img src="https://uploadthingy.s3.us-west-1.amazonaws.com/gaDEujMGhH3qGpTeHVVFhi/ZPPUS-CICS_LOGO.jpg" alt="CICS Logo" class="sidebar-logo">
-                    <h1>CICS</h1>
+                    <h1>CICS Attendance</h1>
                 </div>
                 <nav class="sidebar-nav">
                     <a href="#dashboard" class="nav-item active">
@@ -720,9 +720,12 @@
                 <section id="requests" class="section">
                     <!-- Request Header -->
                     <div class="request-header">
-                        <div class="request-header-left">
-                            <h1 class="request-title">📩 My Requests</h1>
-                            <p class="request-subtitle">Submit and track your attendance or device concerns.</p>
+                        <div class="request-header-content">
+                            <h1 class="request-title">
+                                <span class="material-icons">description</span>
+                                My Requests
+                            </h1>
+                            <p class="request-subtitle">Submit and track your academic requests</p>
                         </div>
                         <button class="new-request-btn" id="newRequestBtn">
                             <span class="material-icons">add</span>
@@ -736,10 +739,19 @@
                         <div class="request-card">
                             <div class="request-card-header">
                                 <div class="request-info">
-                                    <h3 class="request-subject">📘 Database Systems</h3>
+                                    <h3 class="request-subject">
+                                        <span class="material-icons">book</span>
+                                        Database Systems
+                                    </h3>
                                     <div class="request-meta">
-                                        <span class="request-date">🗓️ Oct 16, 2025</span>
-                                        <span class="request-type">💬 Missed Time-In</span>
+                                        <span class="request-date">
+                                            <span class="material-icons">event</span>
+                                            Oct 16, 2025
+                                        </span>
+                                        <span class="request-type">
+                                            <span class="material-icons">schedule</span>
+                                            Missed Time-In
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="request-status status-pending">
@@ -748,7 +760,8 @@
                                 </div>
                             </div>
                             <div class="request-description">
-                                📄 I was present in class but my attendance did not record.
+                                <span class="material-icons">description</span>
+                                I was present in class but my attendance did not record.
                             </div>
                             <div class="request-actions">
                                 <button class="view-details-btn">View Details</button>
@@ -760,10 +773,19 @@
                         <div class="request-card">
                             <div class="request-card-header">
                                 <div class="request-info">
-                                    <h3 class="request-subject">📱 Device Registration</h3>
+                                    <h3 class="request-subject">
+                                        <span class="material-icons">smartphone</span>
+                                        Device Registration
+                                    </h3>
                                     <div class="request-meta">
-                                        <span class="request-date">🗓️ Oct 15, 2025</span>
-                                        <span class="request-type">💬 Registration Issue</span>
+                                        <span class="request-date">
+                                            <span class="material-icons">event</span>
+                                            Oct 15, 2025
+                                        </span>
+                                        <span class="request-type">
+                                            <span class="material-icons">settings</span>
+                                            Registration Issue
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="request-status status-approved">
@@ -772,7 +794,8 @@
                                 </div>
                             </div>
                             <div class="request-description">
-                                📄 Unable to register my new iPhone for attendance tracking.
+                                <span class="material-icons">description</span>
+                                Unable to register my new iPhone for attendance tracking.
                             </div>
                             <div class="request-actions">
                                 <button class="view-details-btn">View Details</button>
@@ -780,7 +803,8 @@
                             </div>
                             <div class="admin-response">
                                 <div class="admin-note">
-                                    <strong>📝 Admin Note:</strong> Device registered successfully. Please restart the app.
+                                    <span class="material-icons">admin_panel_settings</span>
+                                    <strong>Admin Note:</strong> Device registered successfully. Please restart the app.
                                 </div>
                             </div>
                         </div>
@@ -789,10 +813,19 @@
                         <div class="request-card">
                             <div class="request-card-header">
                                 <div class="request-info">
-                                    <h3 class="request-subject">📚 Software Engineering</h3>
+                                    <h3 class="request-subject">
+                                        <span class="material-icons">code</span>
+                                        Software Engineering
+                                    </h3>
                                     <div class="request-meta">
-                                        <span class="request-date">🗓️ Oct 14, 2025</span>
-                                        <span class="request-type">💬 Absence Notice</span>
+                                        <span class="request-date">
+                                            <span class="material-icons">event</span>
+                                            Oct 14, 2025
+                                        </span>
+                                        <span class="request-type">
+                                            <span class="material-icons">event_busy</span>
+                                            Absence Notice
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="request-status status-rejected">
@@ -801,7 +834,8 @@
                                 </div>
                             </div>
                             <div class="request-description">
-                                📄 Medical appointment during class hours. Requesting excuse.
+                                <span class="material-icons">description</span>
+                                Medical appointment during class hours. Requesting excuse.
                             </div>
                             <div class="request-actions">
                                 <button class="view-details-btn">View Details</button>
@@ -809,14 +843,17 @@
                             </div>
                             <div class="admin-response">
                                 <div class="admin-note">
-                                    <strong>📝 Admin Note:</strong> Medical certificate required for excused absence.
+                                    <span class="material-icons">admin_panel_settings</span>
+                                    <strong>Admin Note:</strong> Medical certificate required for excused absence.
                                 </div>
                             </div>
                         </div>
 
                         <!-- Empty State (when no requests) -->
                         <div class="empty-requests" style="display: none;">
-                            <div class="empty-icon">📝</div>
+                            <div class="empty-icon">
+                                <span class="material-icons">description</span>
+                            </div>
                             <h3>No Requests Yet</h3>
                             <p>You haven't submitted any requests. Click "New Request" to get started.</p>
                         </div>
@@ -832,7 +869,10 @@
                 <div class="modal-overlay" id="requestModal">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h2 class="modal-title">📩 New Request</h2>
+                            <h2 class="modal-title">
+                                <span class="material-icons">add_circle</span>
+                                New Request
+                            </h2>
                             <button class="modal-close" id="closeModal">
                                 <span class="material-icons">close</span>
                             </button>
@@ -842,10 +882,10 @@
                                 <label for="requestType">Request Type</label>
                                 <select id="requestType" name="requestType" required>
                                     <option value="">Select request type...</option>
-                                    <option value="attendance">☐ Attendance Correction</option>
-                                    <option value="device">☐ Device Registration Issue</option>
-                                    <option value="absence">☐ Absence Notice</option>
-                                    <option value="other">☐ Other Concern</option>
+                                    <option value="attendance">Attendance Correction</option>
+                                    <option value="device">Device Registration Issue</option>
+                                    <option value="absence">Absence Notice</option>
+                                    <option value="other">Other Concern</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -887,7 +927,10 @@
                 <section id="profile" class="section">
                     <!-- Profile Header -->
                     <div class="profile-header">
-                        <h1 class="profile-title">👤 My Profile</h1>
+                        <h1 class="profile-title">
+                            <span class="material-icons">person</span>
+                            My Profile
+                        </h1>
                         <p class="profile-subtitle">Manage your personal and academic information.</p>
                     </div>
 
@@ -947,9 +990,15 @@
                                         <span class="material-icons">smartphone</span>
                                     </div>
                                     <div class="device-details">
-                                        <h4 class="device-name">📱 iPhone 13 Pro</h4>
+                                        <h4 class="device-name">
+                                            <span class="material-icons">smartphone</span>
+                                            iPhone 13 Pro
+                                        </h4>
                                         <div class="device-meta">
-                                            <span class="device-ip">🌐 192.168.1.45</span>
+                                            <span class="device-ip">
+                                                <span class="material-icons">language</span>
+                                                192.168.1.45
+                                            </span>
                                             <span class="device-status status-active">
                                                 <span class="status-dot"></span>
                                                 Active
@@ -982,7 +1031,10 @@
                 <div class="modal-overlay" id="photoModal">
                     <div class="modal-content photo-modal">
                         <div class="modal-header">
-                            <h2 class="modal-title">📷 Update Profile Photo</h2>
+                            <h2 class="modal-title">
+                                <span class="material-icons">photo_camera</span>
+                                Update Profile Photo
+                            </h2>
                             <button class="modal-close" id="closePhotoModal">
                                 <span class="material-icons">close</span>
                             </button>
@@ -1015,20 +1067,110 @@
 
                 <!-- Settings Section -->
                 <section id="settings" class="section">
-                    <div class="dashboard-header">
-                        <h1 class="dashboard-title">Settings</h1>
-                        <p class="dashboard-subtitle">Update preferences and security</p>
+                    <!-- Settings Header -->
+                    <div class="settings-header">
+                        <h1 class="settings-title">
+                            <span class="material-icons">settings</span>
+                            Settings
+                        </h1>
+                        <p class="settings-subtitle">Manage notifications and appearance preferences.</p>
                     </div>
-                    <div class="dashboard-cards">
-                        <div class="card">
-                            <div class="card-header">
-                                <h2 class="card-title">Preferences</h2>
-                                <span class="material-icons card-icon">settings</span>
+
+                    <!-- Notification Settings Card -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h2 class="settings-card-title">
+                                <span class="material-icons">notifications</span>
+                                Notifications
+                            </h2>
+                        </div>
+                        <div class="settings-card-content">
+                            <div class="setting-item setting-item-disabled">
+                                <div class="setting-info">
+                                    <label class="setting-label">Email Daily Attendance Summary</label>
+                                    <p class="setting-description">Receive daily email reports of your attendance status</p>
+                                    <span class="coming-soon-badge">Coming Soon</span>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch toggle-disabled">
+                                        <input type="checkbox" id="emailSummary" disabled>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
                             </div>
-                            <div class="card-content">
-                                <p>Settings content placeholder.</p>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label class="setting-label">Class Reminder (15 mins before start)</label>
+                                    <p class="setting-description">Get notified before your classes begin</p>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="classReminder" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label class="setting-label">Attendance Request Status Alerts</label>
+                                    <p class="setting-description">Get alerts when your attendance correction request is approved or declined</p>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="requestStatusAlerts" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Appearance Settings Card -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h2 class="settings-card-title">
+                                <span class="material-icons">palette</span>
+                                Appearance
+                            </h2>
+                        </div>
+                        <div class="settings-card-content">
+                            <div class="setting-group">
+                                <h3 class="setting-group-title">Theme Mode</h3>
+                                <div class="theme-options">
+                                    <button class="theme-btn active" data-theme="light">
+                                        <span class="material-icons">light_mode</span>
+                                        <span class="theme-label">Light</span>
+                                    </button>
+                                    <button class="theme-btn" data-theme="dark">
+                                        <span class="material-icons">dark_mode</span>
+                                        <span class="theme-label">Dark</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="setting-group">
+                                <h3 class="setting-group-title">Accent Color</h3>
+                                <div class="color-options">
+                                    <button class="color-btn active" data-color="navy" style="background-color: #1a3e6c;">
+                                        <span class="color-check">✓</span>
+                                    </button>
+                                    <button class="color-btn" data-color="gold" style="background-color: #f0c75e;">
+                                        <span class="color-check">✓</span>
+                                    </button>
+                                    <button class="color-btn" data-color="blue" style="background-color: #436ea3;">
+                                        <span class="color-check">✓</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Notification -->
+                    <div class="save-notification" id="saveNotification">
+                        <span class="material-icons">check_circle</span>
+                        <span>Settings saved successfully!</span>
                     </div>
                 </section>
             </main>
@@ -1081,13 +1223,6 @@
                         <span class="nav-text">Logout</span>
                     </a>
                 </nav>
-                <div class="mobile-user-info">
-                    <div class="user-avatar">JC</div>
-                    <div class="user-details">
-                        <p class="user-name">John Christian</p>
-                        <p class="user-course">BS-Infotech 3B</p>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -1397,6 +1532,124 @@
                     closePhotoModalFunc();
                 }
             });
+
+            // Settings Section Functionality
+            const saveNotification = document.getElementById('saveNotification');
+            const toggleSwitches = document.querySelectorAll('.toggle-switch input');
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            const colorButtons = document.querySelectorAll('.color-btn');
+
+            let currentTheme = 'light';
+            let currentAccentColor = 'navy';
+
+            // Show save notification
+            function showSaveNotification() {
+                saveNotification.classList.add('show');
+                setTimeout(() => {
+                    saveNotification.classList.remove('show');
+                }, 3000);
+            }
+
+            // Save settings to localStorage
+            function saveSettings() {
+                const settings = {
+                    notifications: {
+                        emailSummary: document.getElementById('emailSummary').checked,
+                        classReminder: document.getElementById('classReminder').checked,
+                        requestStatusAlerts: document.getElementById('requestStatusAlerts').checked
+                    },
+                    appearance: {
+                        theme: currentTheme,
+                        accentColor: currentAccentColor
+                    }
+                };
+                
+                localStorage.setItem('studentSettings', JSON.stringify(settings));
+                console.log('Settings saved:', settings);
+                showSaveNotification();
+            }
+
+            // Load settings from localStorage
+            function loadSettings() {
+                const savedSettings = localStorage.getItem('studentSettings');
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    
+                    // Load notification settings
+                    if (settings.notifications) {
+                        document.getElementById('emailSummary').checked = settings.notifications.emailSummary !== false;
+                        document.getElementById('classReminder').checked = settings.notifications.classReminder !== false;
+                        document.getElementById('requestStatusAlerts').checked = settings.notifications.requestStatusAlerts !== false;
+                    }
+                    
+                    // Load appearance settings
+                    if (settings.appearance) {
+                        currentTheme = settings.appearance.theme || 'light';
+                        currentAccentColor = settings.appearance.accentColor || 'navy';
+                        
+                        // Update theme buttons
+                        themeButtons.forEach(btn => {
+                            btn.classList.toggle('active', btn.dataset.theme === currentTheme);
+                        });
+                        
+                        // Update color buttons
+                        colorButtons.forEach(btn => {
+                            btn.classList.toggle('active', btn.dataset.color === currentAccentColor);
+                        });
+                        
+                        // Apply theme
+                        applyTheme(currentTheme);
+                        applyAccentColor(currentAccentColor);
+                    }
+                }
+            }
+
+            // Apply theme
+            function applyTheme(theme) {
+                document.body.classList.toggle('dark-theme', theme === 'dark');
+                currentTheme = theme;
+            }
+
+            // Apply accent color
+            function applyAccentColor(color) {
+                document.body.classList.remove('accent-navy', 'accent-gold', 'accent-blue');
+                document.body.classList.add(`accent-${color}`);
+                currentAccentColor = color;
+            }
+
+            // Toggle switch event listeners
+            toggleSwitches.forEach(toggle => {
+                toggle.addEventListener('change', () => {
+                    saveSettings();
+                });
+            });
+
+            // Theme button event listeners
+            themeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    themeButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const theme = btn.dataset.theme;
+                    applyTheme(theme);
+                    saveSettings();
+                });
+            });
+
+            // Color button event listeners
+            colorButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    colorButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const color = btn.dataset.color;
+                    applyAccentColor(color);
+                    saveSettings();
+                });
+            });
+
+            // Load settings on page load
+            loadSettings();
         });
     </script>
 </body>
