@@ -4,82 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Students Management - CICS Attendance System</title>
+    <link rel="stylesheet" href="shared-sidebar.css">
     <link rel="stylesheet" href="student.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/1.0.0/lucide.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <img src="../../assets/logo/cics_logo.png" alt="CICS Logo" class="sidebar-logo">
-            <h1>CICS Attendance</h1>
-        </div>
-        
-        <nav class="sidebar-nav">
-            <div class="nav-item">
-                <a href="intructor.php" class="nav-link">
-                    <i data-lucide="layout-dashboard" class="nav-icon"></i>
-                    <span>Dashboard</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="Classes.php" class="nav-link">
-                    <i data-lucide="book-open" class="nav-icon"></i>
-                    <span>Classes</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="#" class="nav-link active">
-                    <i data-lucide="users" class="nav-icon"></i>
-                    <span>Students</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="report.php" class="nav-link">
-                    <i data-lucide="bar-chart-3" class="nav-icon"></i>
-                    <span>Reports</span>
-                </a>
-            </div>
-            
-            <div class="sidebar-separator"></div>
-            
-            <div class="nav-item">
-                <a href="#" class="nav-link">
-                    <i data-lucide="map-pin" class="nav-icon"></i>
-                    <span>GPS Settings</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="#" class="nav-link">
-                    <i data-lucide="settings" class="nav-icon"></i>
-                    <span>Account Settings</span>
-                </a>
-            </div>
-            
-            <div class="sidebar-separator"></div>
-            
-            <div class="nav-item">
-                <a href="#" class="nav-link">
-                    <i data-lucide="log-out" class="nav-icon"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </nav>
-    </aside>
-
-    <!-- Sidebar Overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <?php include 'sidebar-include.php'; ?>
 
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <i data-lucide="menu"></i>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="sidebar">
+                        <i data-lucide="menu" aria-hidden="true"></i>
                     </button>
                     <div class="logo-icon">
-                        <i data-lucide="graduation-cap"></i>
+                        <i data-lucide="graduation-cap" aria-hidden="true"></i>
                     </div>
                     <div class="logo-text">
                         <span class="logo-primary">CICS</span>
@@ -441,49 +382,76 @@
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/1.0.0/lucide.min.js"></script>
+    <script src="sidebar.js"></script>
     <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
-
-        // Sidebar functionality
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-
-        mobileMenuBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
-            sidebarOverlay.classList.toggle('active');
-        });
-
-        sidebarOverlay.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-            sidebarOverlay.classList.remove('active');
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 768) {
-                sidebar.classList.remove('open');
-                sidebarOverlay.classList.remove('active');
-            }
-        });
-
-        // Navigation active states
-        document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                document.querySelectorAll('.sidebar-nav .nav-link').forEach(l => l.classList.remove('active'));
-                e.currentTarget.classList.add('active');
-            });
-        });
-
-        // Add student functionality
-        document.getElementById('addStudentBtn').addEventListener('click', () => {
-            alert('Add Student functionality would open a modal or redirect to add student page');
-        });
-
-        // Initialize page
+        // Page-specific functionality for Students page
         document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
+            // Initialize add student functionality
+            const addStudentBtn = document.getElementById('addStudentBtn');
+            if (addStudentBtn) {
+                addStudentBtn.addEventListener('click', () => {
+                    // Create a more sophisticated modal or redirect
+                    const confirmed = confirm('Would you like to add a new student? This will redirect to the add student page.');
+                    if (confirmed) {
+                        // In a real application, this would redirect to an add student page
+                        console.log('Redirecting to add student page...');
+                        // window.location.href = 'add-student.php';
+                    }
+                });
+            }
+
+            // Initialize search functionality
+            const searchInput = document.querySelector('.search-input input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const tableRows = document.querySelectorAll('.data-table tbody tr');
+                    
+                    tableRows.forEach(row => {
+                        const studentName = row.querySelector('.student-name')?.textContent.toLowerCase() || '';
+                        const studentEmail = row.querySelector('.student-id')?.textContent.toLowerCase() || '';
+                        const studentId = row.cells[1]?.textContent.toLowerCase() || '';
+                        
+                        if (studentName.includes(searchTerm) || 
+                            studentEmail.includes(searchTerm) || 
+                            studentId.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            // Initialize filter functionality
+            const filterSelects = document.querySelectorAll('.search-row select');
+            filterSelects.forEach(select => {
+                select.addEventListener('change', () => {
+                    // Implement filter logic here
+                    console.log('Filter changed:', select.value);
+                });
+            });
+
+            // Initialize table action buttons
+            const actionButtons = document.querySelectorAll('.data-table .btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const action = button.querySelector('i').getAttribute('data-lucide');
+                    const row = button.closest('tr');
+                    const studentName = row.querySelector('.student-name')?.textContent;
+                    
+                    if (action === 'eye') {
+                        console.log('View student:', studentName);
+                        // Implement view functionality
+                    } else if (action === 'edit') {
+                        console.log('Edit student:', studentName);
+                        // Implement edit functionality
+                    }
+                });
+            });
+
+            console.log('Students page functionality initialized');
         });
     </script>
 </body>

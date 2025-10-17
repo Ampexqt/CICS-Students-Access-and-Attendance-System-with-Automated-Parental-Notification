@@ -1,0 +1,300 @@
+/* Shared Sidebar CSS for All CICS Instructor Pages */
+/* This ensures identical sidebar appearance across all pages */
+
+/* Color Variables */
+:root {
+    --primary-navy: #1a3e6c;
+    --secondary-blue: #436ea3;
+    --accent-gold: #f0c75e;
+    --white: #ffffff;
+    --soft-white: #fefffe;
+    --soft-blue-light: #f8f8ff;
+    --soft-blue: #edf5ff;
+    --text-dark: #111827;
+    --text-medium: #374151;
+    --text-muted: #344142;
+    --border-light: #d1d5db;
+    --border-medium: #9ca3af;
+    --border-dark: #666;
+    --border: #ddd;
+    --success: #16a34a;
+    --error: #ef4444;
+    --gold-tint-light: rgba(240, 199, 94, 0.1);
+    --gold-tint: rgba(240, 199, 94, 0.2);
+    --navy-tint-light: rgba(26, 62, 108, 0.05);
+    --navy-tint: rgba(26, 62, 108, 0.1);
+    --focus-ring: rgba(26, 62, 108, 0.2);
+}
+
+/* Sidebar Styles - Consistent Across All Pages */
+/* High specificity to override any conflicting styles */
+aside.sidebar,
+.sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 280px !important;
+    height: 100vh !important;
+    background: linear-gradient(180deg, #1a3e6c 0%, #2a4e7c 100%) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+    z-index: 1000 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(10px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    will-change: transform !important;
+    /* Isolate sidebar from page CSS inheritance */
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    line-height: 1.4 !important;
+    letter-spacing: normal !important;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-header {
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 32px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 16px auto;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-logo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    border-color: rgba(240, 199, 94, 0.5);
+}
+
+.sidebar-header h1 {
+    color: white !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    font-family: 'Poppins', sans-serif !important;
+}
+
+.sidebar-nav {
+    padding: 0 16px;
+}
+
+.nav-item {
+    margin-bottom: 4px;
+    position: relative;
+}
+
+.sidebar-nav .nav-link {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 16px !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none !important;
+    border-radius: 8px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    overflow: hidden !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+.sidebar-nav .nav-link:hover,
+.sidebar-nav .nav-link.nav-hover {
+    color: white !important;
+    background-color: rgba(67, 110, 163, 0.7) !important;
+    transform: translateX(4px) !important;
+}
+
+.sidebar-nav .nav-link.active {
+    color: white !important;
+    background-color: #436ea3 !important;
+    box-shadow: 0 4px 12px rgba(67, 110, 163, 0.3) !important;
+}
+
+.sidebar-nav .nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: #f0c75e;
+    border-radius: 0 8px 8px 0;
+}
+
+.nav-icon {
+    margin-right: 12px !important;
+    width: 20px !important;
+    height: 20px !important;
+    flex-shrink: 0 !important;
+}
+
+.sidebar-separator {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 16px 0;
+}
+
+/* Enhanced nav link transitions */
+.sidebar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.sidebar-nav .nav-link:hover::after {
+    left: 100%;
+}
+
+/* Sidebar overlay for mobile */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Mobile menu button - consistent across all pages */
+.mobile-menu-btn {
+    display: none;
+    background: var(--navy-tint-light);
+    border: 2px solid var(--primary-navy);
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    color: var(--primary-navy);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    min-width: 48px;
+    min-height: 48px;
+    z-index: 1001;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-menu-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.mobile-menu-btn:hover {
+    background: var(--primary-navy);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(26, 62, 108, 0.3);
+}
+
+.mobile-menu-btn:hover::before {
+    left: 100%;
+}
+
+.mobile-menu-btn:active {
+    transform: scale(0.95);
+}
+
+/* Responsive Design - Consistent Across All Pages */
+@media (max-width: 1023px) {
+    .sidebar {
+        z-index: 1000;
+    }
+    
+    .mobile-menu-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    aside.sidebar,
+    .sidebar {
+        transform: translateX(0) !important;
+        position: fixed !important;
+        will-change: auto !important;
+    }
+    
+    .mobile-menu-btn {
+        display: none !important;
+    }
+    
+    /* Adjust main content for sidebar */
+    .main-content,
+    .header {
+        margin-left: 280px !important;
+    }
+}
+
+/* Prevent layout shifts and flickering */
+*,
+*::before,
+*::after {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Force consistent text rendering for sidebar elements */
+.sidebar,
+.sidebar *,
+.sidebar-nav,
+.sidebar-nav *,
+.nav-link,
+.nav-link * {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+    font-variant-ligatures: none !important;
+}
+
+/* Typography for consistency */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600&display=swap');
