@@ -4,80 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reports & Analytics - CICS Attendance System</title>
+    <link rel="stylesheet" href="shared-sidebar.css">
     <link rel="stylesheet" href="report.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/1.0.0/lucide.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="reports-page">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <img src="../../assets/logo/cics_logo.png" alt="CICS Logo" class="sidebar-logo">
-                <h1>CICS Attendance</h1>
-            </div>
-            
-            <nav class="sidebar-nav">
-                <div class="nav-item">
-                    <a href="intructor.php" class="nav-link">
-                        <i data-lucide="layout-dashboard" class="nav-icon"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="Classes.php" class="nav-link">
-                        <i data-lucide="book-open" class="nav-icon"></i>
-                        <span>Classes</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="student.php" class="nav-link">
-                        <i data-lucide="users" class="nav-icon"></i>
-                        <span>Students</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="report.php" class="nav-link active">
-                        <i data-lucide="bar-chart-3" class="nav-icon"></i>
-                        <span>Reports</span>
-                    </a>
-                </div>
-                
-                <div class="sidebar-sep"></div>
-                
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i data-lucide="map-pin" class="nav-icon"></i>
-                        <span>GPS Settings</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i data-lucide="settings" class="nav-icon"></i>
-                        <span>Account Settings</span>
-                    </a>
-                </div>
-                
-                <div class="sidebar-sep"></div>
-                
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i data-lucide="log-out" class="nav-icon"></i>
-                        <span>Logout</span>
-                    </a>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Sidebar Overlay -->
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <?php include 'sidebar-include.php'; ?>
 
         <!-- Header -->
         <header class="app-header">
             <div class="container">
                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 0;">
                     <div style="display: flex; align-items: center; gap: 1rem;">
-                        <button id="mobileMenuBtn" style="display: none; background: none; border: none; color: var(--primary-navy); cursor: pointer;">
-                            <i data-lucide="menu" style="width: 1.5rem; height: 1.5rem;"></i>
+                        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="sidebar">
+                            <i data-lucide="menu" aria-hidden="true"></i>
                         </button>
                         <div>
                             <h2 style="margin: 0; color: var(--primary-navy); font-family: 'Poppins', sans-serif;">Reports & Analytics</h2>
@@ -480,56 +421,11 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/1.0.0/lucide.min.js"></script>
+    <script src="sidebar.js"></script>
     <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
+        // Sidebar functionality is now handled by sidebar.js
 
-        // Sidebar functionality
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-
-        if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('open');
-                sidebarOverlay.classList.toggle('active');
-            });
-        }
-
-        if (sidebarOverlay) {
-            sidebarOverlay.addEventListener('click', () => {
-                sidebar.classList.remove('open');
-                sidebarOverlay.classList.remove('active');
-            });
-        }
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 768) {
-                sidebar.classList.remove('open');
-                sidebarOverlay.classList.remove('active');
-            }
-            
-            // Show/hide mobile menu button
-            if (window.innerWidth < 768) {
-                mobileMenuBtn.style.display = 'block';
-            } else {
-                mobileMenuBtn.style.display = 'none';
-            }
-        });
-
-        // Initialize mobile menu button visibility
-        if (window.innerWidth < 768) {
-            mobileMenuBtn.style.display = 'block';
-        }
-
-        // Navigation active states
-        document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                document.querySelectorAll('.sidebar-nav .nav-link').forEach(l => l.classList.remove('active'));
-                e.currentTarget.classList.add('active');
-            });
-        });
+        // Navigation is now handled by sidebar.js
 
         // Report generation simulation
         document.querySelectorAll('.btn').forEach(btn => {
@@ -571,7 +467,9 @@
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         });
 
         // Add CSS animation for notifications

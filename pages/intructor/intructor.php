@@ -4,83 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instructor Dashboard - CICS Attendance Management</title>
+    <link rel="stylesheet" href="shared-sidebar.css">
     <link rel="stylesheet" href="intructor.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/1.0.0/lucide.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <img src="../../assets/logo/cics_logo.png" alt="CICS Logo" class="sidebar-logo">
-            <h1>CICS Attendance</h1>
-        </div>
-        
-        <nav class="sidebar-nav">
-            <div class="nav-item">
-                <a href="#" class="nav-link active">
-                    <i data-lucide="layout-dashboard" class="nav-icon"></i>
-                    <span>Dashboard</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="Classes.php" class="nav-link">
-                    <i data-lucide="book-open" class="nav-icon"></i>
-                    <span>Classes</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="student.php" class="nav-link">
-                    <i data-lucide="users" class="nav-icon"></i>
-                    <span>Students</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="report.php" class="nav-link">
-                    <i data-lucide="bar-chart-3" class="nav-icon"></i>
-                    <span>Reports</span>
-                </a>
-            </div>
-            
-            <div class="sidebar-separator"></div>
-            
-            <div class="nav-item">
-                <a href="#" class="nav-link">
-                    <i data-lucide="map-pin" class="nav-icon"></i>
-                    <span>GPS Settings</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="#" class="nav-link">
-                    <i data-lucide="settings" class="nav-icon"></i>
-                    <span>Account Settings</span>
-                </a>
-            </div>
-            
-            <div class="sidebar-separator"></div>
-            
-            <div class="nav-item">
-                <a href="#" class="nav-link">
-                    <i data-lucide="log-out" class="nav-icon"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </nav>
-    </aside>
-
-    <!-- Sidebar Overlay for Mobile -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <?php include 'sidebar-include.php'; ?>
 
     <!-- Header -->
-    <header class="header with-sidebar">
+    <header class="header">
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn">
-                        <i data-lucide="menu"></i>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="sidebar">
+                        <i data-lucide="menu" aria-hidden="true"></i>
                     </button>
                     <div class="logo-icon">
-                        <i data-lucide="graduation-cap"></i>
+                        <i data-lucide="graduation-cap" aria-hidden="true"></i>
                     </div>
                     <div class="logo-text">
                         <span class="logo-primary">CICS</span>
@@ -105,7 +46,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="main main-content with-sidebar">
+    <main class="main-content">
         <div class="container">
             <!-- Page Header -->
             <div class="page-header">
@@ -629,6 +570,7 @@
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/1.0.0/lucide.min.js"></script>
+    <script src="sidebar.js"></script>
     <script src="intructor.js"></script>
 </body>
 </html>
