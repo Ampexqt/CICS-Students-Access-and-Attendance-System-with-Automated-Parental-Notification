@@ -701,8 +701,7 @@ const pages = {
     });
   },
 
-  // Placeholder page methods for other routes
-  instructors() {
+  async instructors() {
     document.getElementById('app').innerHTML = `
       <div class="page-header">
         <h1 class="page-title">Manage Instructors</h1>
@@ -719,7 +718,7 @@ const pages = {
             <svg class="search-icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
-            <input type="text" class="search-input" placeholder="Search instructors...">
+            <input type="text" class="search-input" placeholder="Search instructors..." onkeyup="filterInstructors(this.value)">
           </div>
         </div>
         <div class="table-container">
@@ -730,35 +729,20 @@ const pages = {
                 <th>Email</th>
                 <th>Subject</th>
                 <th>Section</th>
-                <th>Status</th>
+                <th>Schedule</th>
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="instructors-table-body">
               <tr>
-                <td>Dr. John Smith</td>
-                <td>john.smith@university.edu</td>
-                <td>Computer Science 101</td>
-                <td>CS-1A</td>
-                <td><span class="status-badge active">Active</span></td>
-                <td class="action-icons">
-                  <button class="icon-btn" title="Edit">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                    </svg>
-                  </button>
-                  <button class="icon-btn delete" title="Delete">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                    </svg>
-                  </button>
-                </td>
+                <td colspan="6" style="text-align: center; padding: 20px;">Loading...</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     `;
+    await loadInstructors();
   },
 
   students() {
@@ -1042,6 +1026,8 @@ const pages = {
         const map = L.map('map').setView([14.5995, 120.9842], 15);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         L.marker([14.5995, 120.9842]).addTo(map).bindPopup('University Location');
+      } else {
+        console.error('Leaflet (L) is not loaded');
       }
     }, 100);
   },
@@ -1278,46 +1264,117 @@ function showAddInstructorModal() {
     const endStr = buildTime('#inst_end_hour', '#inst_end_min', '#inst_end_period');
     const schedule_time = startStr && endStr ? `${startStr} - ${endStr}` : '';
 
+    // Map form fields to database columns
+    const yearLevel = getVal('#inst_year_level');
+    const section = getVal('#inst_section');
+    const subjectCode = getVal('#inst_subject_code');
+    
+    // Build section_handled as "COURSE-YEAR+SECTION" format (e.g., "CS-1A")
+    const section_handled = (subjectCode && yearLevel && section) ? 
+      `${subjectCode}-${yearLevel}${section}` : '';
+
     const payload = {
       first_name: getVal('#inst_first_name'),
       last_name: getVal('#inst_last_name'),
       email: getVal('#inst_email'),
-      subject: getVal('#inst_subject'),
-      subject_code: getVal('#inst_subject_code'),
-      year_level: getVal('#inst_year_level'),
-      section: getVal('#inst_section'),
+      assigned_subject: getVal('#inst_subject'),
+      section_handled: section_handled,
       schedule_day: days.join(','),
       schedule_time
     };
 
-    // Basic validation
-    if (!payload.first_name || !payload.last_name || !payload.email) {
-      alert('Please fill in First Name, Last Name, and a valid Email.');
+  // Basic validation
+  if (!payload.first_name || !payload.last_name || !payload.email) {
+    alert('Please fill in First Name, Last Name, and a valid Email.');
+    return;
+  }
+
+  try {
+    const basePath = window.location.pathname.split('/pages/')[0] || '';
+    const endpoint = `${basePath}/pages/admin/api/instructors/create.php`;
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.success) {
+      showToast(data.message || 'Failed to create instructor.', 'error');
       return;
     }
-
-    try {
-      const basePath = window.location.pathname.split('/pages/')[0] || '';
-      const endpoint = `${basePath}/modules/instructors/create.php`;
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) {
-        alert(data.message || 'Failed to create instructor.');
-        return;
+    if (window.emailjs && typeof emailjs.send === 'function') {
+      console.log('EmailJS is available. Preparing to send...');
+      const templateParams = {
+        email: payload.email,
+        instructor_name: `${payload.first_name} ${payload.last_name}`.trim(),
+        temp_password: data.temp_password || '',
+        portal_url: window.location.origin + basePath + '/index.php',
+        org_name: 'CICS Attendance System',
+        support_email: 'haroldzkie99@gmail.com',
+        logo_url: window.location.origin + basePath + '/assets/logo/cics_logo.png',
+        year: new Date().getFullYear().toString()
+      };
+      try {
+        console.log('EmailJS send payload:', { service: 'service_1u6kzup', template: 'template_bgrl80h', templateParams });
+        const result = await emailjs.send('service_1u6kzup', 'template_bgrl80h', templateParams);
+        console.log('EmailJS sent successfully:', result);
+        showToast('Email sent to ' + payload.email, 'success');
+      } catch (e) {
+        console.error('EmailJS send failed - Full error:', e);
+        console.error('Error status:', e.status);
+        console.error('Error text:', e.text);
+        if (e.status === 400) {
+          console.error('400 Error - likely template variable mismatch or validation issue');
+        }
+        showToast('Email failed: ' + (e.text || e.message || 'Unknown error'), 'error');
       }
-      alert('Instructor created successfully. Temp password: ' + (data.temp_password || '(generated)'));
-      modal.remove();
-      // Optionally refresh instructors list
-      window.location.hash = '/instructors';
-    } catch (err) {
-      alert('Network error while creating instructor.');
-      console.error(err);
     }
+    showToast('Instructor created. Temp password: ' + (data.temp_password || '(generated)'), 'success');
+    modal.remove();
+    // Reload instructors list if we're on the instructors page
+    if (window.location.hash === '#/instructors') {
+      loadInstructors();
+    }
+  } catch (err) {
+    showToast('Network error while creating instructor.', 'error');
+    console.error(err);
+  }
   });
+}
+
+// Toast helpers
+function injectToastStylesOnce() {
+  if (document.getElementById('toast-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'toast-styles';
+  style.textContent = `
+    #toast-container { position: fixed; top: 16px; right: 16px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast { min-width: 240px; max-width: 360px; padding: 12px 14px; border-radius: 8px; color: #fff; font-family: Arial, Helvetica, sans-serif; font-size: 14px; box-shadow: 0 6px 18px rgba(0,0,0,0.18); opacity: 0; transform: translateY(-6px); transition: all .25s ease; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast-success { background: #16a34a; }
+    .toast-error { background: #dc2626; }
+    .toast-info { background: #2563eb; }
+  `;
+  document.head.appendChild(style);
+}
+
+function showToast(message, type = 'info', duration = 4000) {
+  injectToastStylesOnce();
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.appendChild(container);
+  }
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 250);
+  }, duration);
 }
 
 function exportReport(format) {
@@ -1368,6 +1425,211 @@ function confirmLogout() {
   
   // In a real application, you would redirect to login page
   // window.location.href = 'login.php';
+}
+
+// CRUD Functions for Instructors
+async function loadInstructors() {
+  try {
+    const basePath = window.location.pathname.split('/pages/')[0] || '';
+    const response = await fetch(`${basePath}/pages/admin/api/instructors/list_noauth.php`);
+    const data = await response.json();
+    
+    if (data.success) {
+      renderInstructorsTable(data.data);
+    } else {
+      showToast('Failed to load instructors: ' + data.message, 'error');
+    }
+  } catch (error) {
+    console.error('Error loading instructors:', error);
+    showToast('Error loading instructors', 'error');
+  }
+}
+
+function renderInstructorsTable(instructors) {
+  const tbody = document.getElementById('instructors-table-body');
+  if (!tbody) return;
+  
+  if (instructors.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 20px; color: #666;">
+          No instructors found. Click "Add Instructor" to create one.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
+  tbody.innerHTML = instructors.map(instructor => {
+    // Format section to show as "3-A" instead of "CS-1A"
+    let formattedSection = instructor.section_handled || '-';
+    if (formattedSection !== '-' && formattedSection.includes('-')) {
+      // Extract the number and letter part (e.g., "CS-1A" -> "1-A", "IT-3B" -> "3-B")
+      const match = formattedSection.match(/(\d+)([A-Z])$/);
+      if (match) {
+        formattedSection = `${match[1]}-${match[2]}`;
+      }
+    }
+    
+    return `
+    <tr>
+      <td>${instructor.first_name} ${instructor.last_name}</td>
+      <td>${instructor.email}</td>
+      <td>${instructor.assigned_subject || '-'}</td>
+      <td>${formattedSection}</td>
+      <td>${instructor.schedule_day && instructor.schedule_time ? instructor.schedule_day + ' ' + instructor.schedule_time : '-'}</td>
+      <td class="action-icons">
+        <button class="icon-btn" title="Edit" onclick="showEditInstructorModal(${instructor.instructor_id})">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+        </button>
+        <button class="icon-btn delete" title="Delete" onclick="confirmDeleteInstructor(${instructor.instructor_id}, '${instructor.first_name} ${instructor.last_name}')">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+        </button>
+      </td>
+    </tr>
+    `;
+  }).join('');
+}
+
+function filterInstructors(searchTerm) {
+  const rows = document.querySelectorAll('#instructors-table-body tr');
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
+  });
+}
+
+async function confirmDeleteInstructor(instructorId, instructorName) {
+  if (!confirm(`Are you sure you want to delete instructor "${instructorName}"?`)) {
+    return;
+  }
+  
+  try {
+    const basePath = window.location.pathname.split('/pages/')[0] || '';
+    const response = await fetch(`${basePath}/pages/admin/api/instructors/delete_noauth.php`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ instructor_id: instructorId })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      showToast('Instructor deleted successfully', 'success');
+      loadInstructors(); // Reload the table
+    } else {
+      showToast('Failed to delete instructor: ' + data.message, 'error');
+    }
+  } catch (error) {
+    console.error('Error deleting instructor:', error);
+    showToast('Error deleting instructor', 'error');
+  }
+}
+
+function showEditInstructorModal(instructorId) {
+  // Find instructor data from the table
+  const rows = document.querySelectorAll('#instructors-table-body tr');
+  let instructorData = null;
+  
+  // This is a simple approach - in production, you'd fetch from API
+  rows.forEach(row => {
+    const editBtn = row.querySelector(`button[onclick*="${instructorId}"]`);
+    if (editBtn) {
+      const cells = row.querySelectorAll('td');
+      const fullName = cells[0].textContent.split(' ');
+      instructorData = {
+        instructor_id: instructorId,
+        first_name: fullName[0] || '',
+        last_name: fullName.slice(1).join(' ') || '',
+        email: cells[1].textContent,
+        assigned_subject: cells[2].textContent === '-' ? '' : cells[2].textContent,
+        section_handled: cells[3].textContent === '-' ? '' : cells[3].textContent,
+        schedule: cells[4].textContent === '-' ? '' : cells[4].textContent
+      };
+    }
+  });
+  
+  if (!instructorData) {
+    showToast('Instructor data not found', 'error');
+    return;
+  }
+  
+  // Create edit modal (similar to add modal but with pre-filled data)
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h3 class="modal-header">Edit Instructor</h3>
+      <form id="edit-instructor-form">
+        <input type="hidden" name="instructor_id" value="${instructorData.instructor_id}">
+        <div class="grid grid-cols-2" style="gap: 16px;">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-input" name="first_name" value="${instructorData.first_name}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-input" name="last_name" value="${instructorData.last_name}" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" name="email" value="${instructorData.email}" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <input type="text" class="form-input" name="assigned_subject" value="${instructorData.assigned_subject}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Section</label>
+          <input type="text" class="form-input" name="section_handled" value="${instructorData.section_handled}">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn" style="background: transparent; color: #4a4a4a;" onclick="this.closest('.modal').remove()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Instructor</button>
+        </div>
+      </form>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.remove();
+  });
+  
+  // Handle form submission
+  const form = modal.querySelector('#edit-instructor-form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+    
+    try {
+      const basePath = window.location.pathname.split('/pages/')[0] || '';
+      const response = await fetch(`${basePath}/pages/admin/api/instructors/update.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        showToast('Instructor updated successfully', 'success');
+        modal.remove();
+        loadInstructors(); // Reload the table
+      } else {
+        showToast('Failed to update instructor: ' + data.message, 'error');
+      }
+    } catch (error) {
+      console.error('Error updating instructor:', error);
+      showToast('Error updating instructor', 'error');
+    }
+  });
 }
 
 // Initialize app

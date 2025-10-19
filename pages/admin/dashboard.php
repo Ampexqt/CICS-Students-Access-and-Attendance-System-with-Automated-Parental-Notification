@@ -250,6 +250,21 @@
       }
     });
   </script>
-  <script src="dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    (function(){
+      if (window.emailjs && typeof emailjs.init === 'function') {
+        try {
+          emailjs.init('6Ac8NexftXFZrF19D');
+          console.log('EmailJS initialized successfully');
+        } catch (e) {
+          console.error('EmailJS init failed', e);
+        }
+      } else {
+        console.error('EmailJS SDK not loaded');
+      }
+    })();
+  </script>
+  <script src="dashboard.js?v=11"></script>
 </body>
 </html>
