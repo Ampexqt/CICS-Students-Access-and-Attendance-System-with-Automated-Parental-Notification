@@ -1097,45 +1097,153 @@ function showAddInstructorModal() {
   modal.innerHTML = `
     <div class="modal-content">
       <h3 class="modal-header">Add New Instructor</h3>
-      <form>
+      <form id="add-instructor-form">
         <div class="grid grid-cols-2" style="gap: 16px;">
           <div class="form-group">
             <label class="form-label">First Name</label>
-            <input type="text" class="form-input">
+            <input type="text" class="form-input" name="first_name" id="inst_first_name">
           </div>
           <div class="form-group">
             <label class="form-label">Last Name</label>
-            <input type="text" class="form-input">
+            <input type="text" class="form-input" name="last_name" id="inst_last_name">
           </div>
         </div>
         <div class="form-group">
           <label class="form-label">Email</label>
-          <input type="email" class="form-input">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" class="form-input">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Subject</label>
-          <input type="text" class="form-input">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Section</label>
-          <input type="text" class="form-input">
+          <input type="email" class="form-input" name="email" id="inst_email">
         </div>
         <div class="grid grid-cols-2" style="gap: 16px;">
           <div class="form-group">
-            <label class="form-label">Day</label>
-            <select class="form-select">
-              <option value="">Select days</option>
-              <option value="mwf">Mon/Wed/Fri</option>
-              <option value="tth">Tue/Thu</option>
+            <label class="form-label">Subject</label>
+            <input type="text" class="form-input" name="subject" id="inst_subject">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subject Code</label>
+            <input type="text" class="form-input" placeholder="e.g. CS101" style="max-width: 180px;" name="subject_code" id="inst_subject_code">
+          </div>
+        </div>
+        <div class="grid grid-cols-2" style="gap: 16px;">
+          <div class="form-group">
+            <label class="form-label">Year Level</label>
+            <select class="form-select" name="year_level" id="inst_year_level">
+              <option value="">Select year</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Time</label>
-            <input type="text" class="form-input" placeholder="e.g. 9:00-10:30 AM">
+            <label class="form-label">Section</label>
+            <select class="form-select" name="section" id="inst_section">
+              <option value="">Select section</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="E">E</option>
+              <option value="F">F</option>
+              <option value="G">G</option>
+              <option value="H">H</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2" style="gap: 16px;">
+          <div class="form-group">
+            <label class="form-label">Days</label>
+            <div class="checkbox-group" style="display:flex; flex-wrap:wrap; gap:10px 16px;">
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Mon" name="days[]"> Mon</label>
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Tue" name="days[]"> Tue</label>
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Wed" name="days[]"> Wed</label>
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Thu" name="days[]"> Thu</label>
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Fri" name="days[]"> Fri</label>
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Sat" name="days[]"> Sat</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time</label>
+          <div class="time-rows" style="display:flex; flex-direction:column; gap:8px;">
+            <div>
+              <label class="form-label" style="font-size:12px; color:#6e6e6e;">Start</label>
+              <div style="display:flex; gap:6px; align-items:center; white-space:nowrap;">
+                <select class="form-select" aria-label="Start hour" style="width:68px;" name="start_hour" id="inst_start_hour">
+                  <option value="">HH</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                  <option>9</option>
+                  <option>10</option>
+                  <option>11</option>
+                  <option>12</option>
+                </select>
+                <span>:</span>
+                <select class="form-select" aria-label="Start minute" style="width:68px;" name="start_min" id="inst_start_min">
+                  <option value="">MM</option>
+                  <option>00</option>
+                  <option>05</option>
+                  <option>10</option>
+                  <option>15</option>
+                  <option>20</option>
+                  <option>25</option>
+                  <option>30</option>
+                  <option>35</option>
+                  <option>40</option>
+                  <option>45</option>
+                  <option>50</option>
+                  <option>55</option>
+                </select>
+                <select class="form-select" aria-label="Start period" style="width:74px;" name="start_period" id="inst_start_period">
+                  <option>AM</option>
+                  <option>PM</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="form-label" style="font-size:12px; color:#6e6e6e;">End</label>
+              <div style="display:flex; gap:6px; align-items:center; white-space:nowrap;">
+                <select class="form-select" aria-label="End hour" style="width:68px;" name="end_hour" id="inst_end_hour">
+                  <option value="">HH</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                  <option>9</option>
+                  <option>10</option>
+                  <option>11</option>
+                  <option>12</option>
+                </select>
+                <span>:</span>
+                <select class="form-select" aria-label="End minute" style="width:68px;" name="end_min" id="inst_end_min">
+                  <option value="">MM</option>
+                  <option>00</option>
+                  <option>05</option>
+                  <option>10</option>
+                  <option>15</option>
+                  <option>20</option>
+                  <option>25</option>
+                  <option>30</option>
+                  <option>35</option>
+                  <option>40</option>
+                  <option>45</option>
+                  <option>50</option>
+                  <option>55</option>
+                </select>
+                <select class="form-select" aria-label="End period" style="width:74px;" name="end_period" id="inst_end_period">
+                  <option>AM</option>
+                  <option>PM</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
         <div class="modal-actions">
@@ -1143,13 +1251,71 @@ function showAddInstructorModal() {
           <button type="submit" class="btn btn-primary">Add Instructor</button>
         </div>
       </form>
-    </div>
-  `;
+    `;
   document.body.appendChild(modal);
   
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       modal.remove();
+    }
+  });
+
+  // Submit handler
+  const form = modal.querySelector('#add-instructor-form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const getVal = (sel) => modal.querySelector(sel)?.value?.trim() || '';
+    const days = Array.from(modal.querySelectorAll('input[name="days[]"]:checked')).map(i => i.value);
+
+    const buildTime = (hSel, mSel, pSel) => {
+      const hh = getVal(hSel);
+      const mm = getVal(mSel) || '00';
+      const pp = getVal(pSel) || 'AM';
+      return hh ? `${hh}:${mm} ${pp}` : '';
+    };
+
+    const startStr = buildTime('#inst_start_hour', '#inst_start_min', '#inst_start_period');
+    const endStr = buildTime('#inst_end_hour', '#inst_end_min', '#inst_end_period');
+    const schedule_time = startStr && endStr ? `${startStr} - ${endStr}` : '';
+
+    const payload = {
+      first_name: getVal('#inst_first_name'),
+      last_name: getVal('#inst_last_name'),
+      email: getVal('#inst_email'),
+      subject: getVal('#inst_subject'),
+      subject_code: getVal('#inst_subject_code'),
+      year_level: getVal('#inst_year_level'),
+      section: getVal('#inst_section'),
+      schedule_day: days.join(','),
+      schedule_time
+    };
+
+    // Basic validation
+    if (!payload.first_name || !payload.last_name || !payload.email) {
+      alert('Please fill in First Name, Last Name, and a valid Email.');
+      return;
+    }
+
+    try {
+      const basePath = window.location.pathname.split('/pages/')[0] || '';
+      const endpoint = `${basePath}/modules/instructors/create.php`;
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) {
+        alert(data.message || 'Failed to create instructor.');
+        return;
+      }
+      alert('Instructor created successfully. Temp password: ' + (data.temp_password || '(generated)'));
+      modal.remove();
+      // Optionally refresh instructors list
+      window.location.hash = '/instructors';
+    } catch (err) {
+      alert('Network error while creating instructor.');
+      console.error(err);
     }
   });
 }
