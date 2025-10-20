@@ -24,7 +24,9 @@ try {
             i.last_name,
             i.email,
             i.assigned_subject,
+            i.subject_code,
             i.section_handled,
+            i.program,
             i.schedule_day,
             i.schedule_time,
             a.name as admin_name

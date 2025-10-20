@@ -464,7 +464,10 @@ function showAddInstructorModal() {
           year: new Date().getFullYear().toString()
         };
         try {
-          console.log('EmailJS send payload:', { service: 'service_1u6kzup', template: 'template_bgrl80h', templateParams });
+          // Log payload without sensitive data for debugging
+          const logParams = { ...templateParams };
+          delete logParams.temp_password;
+          console.log('EmailJS send payload:', { service: 'service_1u6kzup', template: 'template_bgrl80h', templateParams: logParams });
           const result = await emailjs.send('service_1u6kzup', 'template_bgrl80h', templateParams);
           console.log('EmailJS sent successfully:', result);
           showToast('Email sent to ' + payload.email, 'success');
@@ -481,7 +484,7 @@ function showAddInstructorModal() {
         console.warn('EmailJS not available at send time', { emailjs: window.emailjs });
         showToast('EmailJS not available. Email not sent.', 'error');
       }
-      showToast('Instructor created. Temp password: ' + (data.temp_password || '(generated)'), 'success');
+      showToast('Instructor created successfully. Password has been sent to the instructor\'s email.', 'success');
       modal.remove();
       if (window.location.hash === '#/instructors') {
         loadInstructors();

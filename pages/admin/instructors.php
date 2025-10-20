@@ -21,8 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'add':
                 try {
                     $stmt = $pdo->prepare("
-                        INSERT INTO instructor (admin_id, first_name, last_name, email, password, assigned_subject, section_handled) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO instructor (admin_id, first_name, last_name, email, password, assigned_subject, subject_code, section_handled, program) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ");
                     
                     $tempPassword = bin2hex(random_bytes(4)); // Generate 8-character temp password
@@ -35,10 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $_POST['email'],
                         $hashedPassword,
                         $_POST['assigned_subject'] ?? null,
-                        $_POST['section_handled'] ?? null
+                        $_POST['subject_code'] ?? null,
+                        $_POST['section_handled'] ?? null,
+                        $_POST['program'] ?? 'BS-InfoTech'
                     ]);
                     
-                    $message = "Instructor added successfully! Temporary password: $tempPassword";
+                    $message = "Instructor added successfully! Password has been generated and should be sent to the instructor's email.";
                     $messageType = 'success';
                 } catch (PDOException $e) {
                     if ($e->getCode() == 23000) { // Duplicate entry
@@ -66,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     $stmt = $pdo->prepare("
                         UPDATE instructor 
-                        SET first_name = ?, last_name = ?, email = ?, assigned_subject = ?, section_handled = ?
+                        SET first_name = ?, last_name = ?, email = ?, assigned_subject = ?, subject_code = ?, section_handled = ?, program = ?
                         WHERE instructor_id = ?
                     ");
                     $stmt->execute([
@@ -74,7 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $_POST['last_name'],
                         $_POST['email'],
                         $_POST['assigned_subject'] ?? null,
+                        $_POST['subject_code'] ?? null,
                         $_POST['section_handled'] ?? null,
+                        $_POST['program'] ?? 'BS-InfoTech',
                         $_POST['instructor_id']
                     ]);
                     $message = "Instructor updated successfully!";
@@ -98,6 +102,7 @@ try {
             email,
             assigned_subject,
             section_handled,
+            program,
             schedule_day,
             schedule_time
         FROM instructor

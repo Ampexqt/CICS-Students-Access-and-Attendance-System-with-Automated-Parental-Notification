@@ -15,7 +15,9 @@ try {
             last_name,
             email,
             assigned_subject,
+            subject_code,
             section_handled,
+            program,
             schedule_day,
             schedule_time
         FROM instructor

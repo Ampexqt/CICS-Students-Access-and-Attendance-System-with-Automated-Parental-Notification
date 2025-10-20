@@ -33,10 +33,12 @@ try {
             email, 
             password, 
             assigned_subject, 
+            subject_code,
             section_handled, 
+            program,
             schedule_day, 
             schedule_time
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     
     $stmt->execute([
@@ -46,7 +48,9 @@ try {
         $input['email'],
         $hashedPassword,
         $input['assigned_subject'] ?? null,
+        $input['subject_code'] ?? null,
         $input['section_handled'] ?? null,
+        $input['program'] ?? 'BS-InfoTech',
         $input['schedule_day'] ?? null,
         $input['schedule_time'] ?? null
     ]);

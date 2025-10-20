@@ -56,7 +56,7 @@ try {
         exit;
     }
 
-    // Build section string (e.g., 1-A)
+    // Build section string (e.g., 1-A) - separate from subject_code
     $section_handled = '';
     if ($yearLevel !== '' && $section !== '') {
         $section_handled = $yearLevel . '-' . strtoupper($section);
@@ -70,7 +70,7 @@ try {
     $adminId = $_SESSION['user_id'] ?? 1;
 
     // Insert instructor
-    $stmt = $pdo->prepare('INSERT INTO instructor (admin_id, first_name, last_name, email, password, assigned_subject, section_handled, schedule_day, schedule_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    $stmt = $pdo->prepare('INSERT INTO instructor (admin_id, first_name, last_name, email, password, assigned_subject, subject_code, section_handled, program, schedule_day, schedule_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
     $stmt->execute([
         $adminId,
         $first,
@@ -78,7 +78,9 @@ try {
         $email,
         $passwordHash,
         $subjectName !== '' ? $subjectName : null,
+        $subjectCode !== '' ? $subjectCode : null,
         $section_handled !== '' ? $section_handled : null,
+        $data['program'] ?? 'BS-InfoTech',
         $days !== '' ? $days : null,
         $time !== '' ? $time : null,
     ]);

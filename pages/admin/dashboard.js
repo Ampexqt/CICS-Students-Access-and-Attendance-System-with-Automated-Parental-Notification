@@ -729,13 +729,14 @@ const pages = {
                 <th>Email</th>
                 <th>Subject</th>
                 <th>Section</th>
+                <th>Program</th>
                 <th>Schedule</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody id="instructors-table-body">
               <tr>
-                <td colspan="6" style="text-align: center; padding: 20px;">Loading...</td>
+                <td colspan="7" style="text-align: center; padding: 20px;">Loading...</td>
               </tr>
             </tbody>
           </table>
@@ -1134,6 +1135,13 @@ function showAddInstructorModal() {
             </select>
           </div>
         </div>
+        <div class="form-group">
+          <label class="form-label">Program</label>
+          <select class="form-select" name="program" id="inst_program">
+            <option value="BS-InfoTech">BS-InfoTech</option>
+            <option value="BS-InfoSys">BS-InfoSys</option>
+          </select>
+        </div>
         <div class="grid grid-cols-2" style="gap: 16px;">
           <div class="form-group">
             <label class="form-label">Days</label>
@@ -1269,16 +1277,18 @@ function showAddInstructorModal() {
     const section = getVal('#inst_section');
     const subjectCode = getVal('#inst_subject_code');
     
-    // Build section_handled as "COURSE-YEAR+SECTION" format (e.g., "CS-1A")
-    const section_handled = (subjectCode && yearLevel && section) ? 
-      `${subjectCode}-${yearLevel}${section}` : '';
+    // Build section_handled as "YEAR-SECTION" format (e.g., "1-A")
+    const section_handled = (yearLevel && section) ? 
+      `${yearLevel}-${section}` : '';
 
     const payload = {
       first_name: getVal('#inst_first_name'),
       last_name: getVal('#inst_last_name'),
       email: getVal('#inst_email'),
       assigned_subject: getVal('#inst_subject'),
+      subject_code: getVal('#inst_subject_code'),
       section_handled: section_handled,
+      program: getVal('#inst_program'),
       schedule_day: days.join(','),
       schedule_time
     };
@@ -1315,7 +1325,10 @@ function showAddInstructorModal() {
         year: new Date().getFullYear().toString()
       };
       try {
-        console.log('EmailJS send payload:', { service: 'service_1u6kzup', template: 'template_bgrl80h', templateParams });
+        // Log payload without sensitive data for debugging
+        const logParams = { ...templateParams };
+        delete logParams.temp_password;
+        console.log('EmailJS send payload:', { service: 'service_1u6kzup', template: 'template_bgrl80h', templateParams: logParams });
         const result = await emailjs.send('service_1u6kzup', 'template_bgrl80h', templateParams);
         console.log('EmailJS sent successfully:', result);
         showToast('Email sent to ' + payload.email, 'success');
@@ -1329,7 +1342,7 @@ function showAddInstructorModal() {
         showToast('Email failed: ' + (e.text || e.message || 'Unknown error'), 'error');
       }
     }
-    showToast('Instructor created. Temp password: ' + (data.temp_password || '(generated)'), 'success');
+    showToast('Instructor created successfully. Password has been sent to the instructor\'s email.', 'success');
     modal.remove();
     // Reload instructors list if we're on the instructors page
     if (window.location.hash === '#/instructors') {
@@ -1452,7 +1465,7 @@ function renderInstructorsTable(instructors) {
   if (instructors.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="6" style="text-align: center; padding: 20px; color: #666;">
+        <td colspan="7" style="text-align: center; padding: 20px; color: #666;">
           No instructors found. Click "Add Instructor" to create one.
         </td>
       </tr>
@@ -1477,6 +1490,7 @@ function renderInstructorsTable(instructors) {
       <td>${instructor.email}</td>
       <td>${instructor.assigned_subject || '-'}</td>
       <td>${formattedSection}</td>
+      <td>${instructor.program || 'BS-InfoTech'}</td>
       <td>${instructor.schedule_day && instructor.schedule_time ? instructor.schedule_day + ' ' + instructor.schedule_time : '-'}</td>
       <td class="action-icons">
         <button class="icon-btn" title="Edit" onclick="showEditInstructorModal(${instructor.instructor_id})">
@@ -1529,31 +1543,36 @@ async function confirmDeleteInstructor(instructorId, instructorName) {
   }
 }
 
-function showEditInstructorModal(instructorId) {
-  // Find instructor data from the table
-  const rows = document.querySelectorAll('#instructors-table-body tr');
-  let instructorData = null;
+async function showEditInstructorModal(instructorId) {
+  // Fetch complete instructor data from API
+  let instructorData;
   
-  // This is a simple approach - in production, you'd fetch from API
-  rows.forEach(row => {
-    const editBtn = row.querySelector(`button[onclick*="${instructorId}"]`);
-    if (editBtn) {
-      const cells = row.querySelectorAll('td');
-      const fullName = cells[0].textContent.split(' ');
-      instructorData = {
-        instructor_id: instructorId,
-        first_name: fullName[0] || '',
-        last_name: fullName.slice(1).join(' ') || '',
-        email: cells[1].textContent,
-        assigned_subject: cells[2].textContent === '-' ? '' : cells[2].textContent,
-        section_handled: cells[3].textContent === '-' ? '' : cells[3].textContent,
-        schedule: cells[4].textContent === '-' ? '' : cells[4].textContent
-      };
+  try {
+    const basePath = window.location.pathname.split('/pages/')[0] || '';
+    const response = await fetch(`${basePath}/pages/admin/api/instructors/list_noauth.php`);
+    const data = await response.json();
+    
+    if (!data.success) {
+      showToast('Failed to load instructor data', 'error');
+      return;
     }
-  });
-  
-  if (!instructorData) {
-    showToast('Instructor data not found', 'error');
+    
+    // Find the specific instructor
+    instructorData = data.data.find(instructor => instructor.instructor_id == instructorId);
+    
+    if (!instructorData) {
+      showToast('Instructor data not found', 'error');
+      return;
+    }
+    
+    // Convert schedule data for form population
+    instructorData.schedule = instructorData.schedule_day && instructorData.schedule_time ? 
+      `${instructorData.schedule_day} ${instructorData.schedule_time}` : 
+      (instructorData.schedule_time || '');
+      
+  } catch (error) {
+    console.error('Error fetching instructor data:', error);
+    showToast('Error loading instructor data', 'error');
     return;
   }
   
@@ -1576,16 +1595,108 @@ function showEditInstructorModal(instructorId) {
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" name="email" value="${instructorData.email}" required>
+          <label class="form-label">Email (Read Only)</label>
+          <input type="email" class="form-input" value="${instructorData.email}" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+          <input type="hidden" name="email" value="${instructorData.email}">
+        </div>
+        <div class="grid grid-cols-2" style="gap: 16px;">
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <input type="text" class="form-input" name="subject" id="edit_inst_subject" value="${instructorData.assigned_subject}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subject Code</label>
+            <input type="text" class="form-input" placeholder="e.g. CS101" style="max-width: 180px;" name="subject_code" id="edit_inst_subject_code">
+          </div>
+        </div>
+        <div class="grid grid-cols-2" style="gap: 16px;">
+          <div class="form-group">
+            <label class="form-label">Year Level</label>
+            <select class="form-select" name="year_level" id="edit_inst_year_level">
+              <option value="">Select year</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Section</label>
+            <select class="form-select" name="section" id="edit_inst_section">
+              <option value="">Select section</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="E">E</option>
+              <option value="F">F</option>
+              <option value="G">G</option>
+              <option value="H">H</option>
+            </select>
+          </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Subject</label>
-          <input type="text" class="form-input" name="assigned_subject" value="${instructorData.assigned_subject}">
+          <label class="form-label">Program</label>
+          <select class="form-select" name="program" id="edit_inst_program">
+            <option value="BS-InfoTech" ${instructorData.program === 'BS-InfoTech' ? 'selected' : ''}>BS-InfoTech</option>
+            <option value="BS-InfoSys" ${instructorData.program === 'BS-InfoSys' ? 'selected' : ''}>BS-InfoSys</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2" style="gap: 16px;">
+          <div class="form-group">
+            <label class="form-label">Days</label>
+            <div class="checkbox-group" style="display:flex; flex-wrap:wrap; gap:10px 16px;">
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Mon" name="days[]"> Mon</label>
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Tue" name="days[]"> Tue</label>
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Wed" name="days[]"> Wed</label>
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Thu" name="days[]"> Thu</label>
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Fri" name="days[]"> Fri</label>
+              <label style="display:inline-flex; align-items:center; gap:6px;"><input type="checkbox" value="Sat" name="days[]"> Sat</label>
+            </div>
+          </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Section</label>
-          <input type="text" class="form-input" name="section_handled" value="${instructorData.section_handled}">
+          <label class="form-label">Time</label>
+          <div class="time-rows" style="display:flex; flex-direction:column; gap:8px;">
+            <div>
+              <label class="form-label" style="font-size:12px; color:#6e6e6e;">Start</label>
+              <div style="display:flex; gap:6px; align-items:center; white-space:nowrap;">
+                <select class="form-select" aria-label="Start hour" style="width:68px;" name="start_hour" id="edit_inst_start_hour">
+                  <option value="">HH</option>
+                  <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+                  <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+                </select>
+                <span>:</span>
+                <select class="form-select" aria-label="Start minute" style="width:68px;" name="start_min" id="edit_inst_start_min">
+                  <option value="">MM</option>
+                  <option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
+                </select>
+                <select class="form-select" aria-label="Start period" style="width:68px;" name="start_period" id="edit_inst_start_period">
+                  <option value="">AM/PM</option>
+                  <option value="AM">AM</option><option value="PM">PM</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="form-label" style="font-size:12px; color:#6e6e6e;">End</label>
+              <div style="display:flex; gap:6px; align-items:center; white-space:nowrap;">
+                <select class="form-select" aria-label="End hour" style="width:68px;" name="end_hour" id="edit_inst_end_hour">
+                  <option value="">HH</option>
+                  <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+                  <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+                </select>
+                <span>:</span>
+                <select class="form-select" aria-label="End minute" style="width:68px;" name="end_min" id="edit_inst_end_min">
+                  <option value="">MM</option>
+                  <option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
+                </select>
+                <select class="form-select" aria-label="End period" style="width:68px;" name="end_period" id="edit_inst_end_period">
+                  <option value="">AM/PM</option>
+                  <option value="AM">AM</option><option value="PM">PM</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-actions">
           <button type="button" class="btn" style="background: transparent; color: #4a4a4a;" onclick="this.closest('.modal').remove()">Cancel</button>
@@ -1597,6 +1708,62 @@ function showEditInstructorModal(instructorId) {
   
   document.body.appendChild(modal);
   
+  // Populate existing schedule data
+  // Parse days from schedule_day (format: "Mon,Tue,Wed")
+  if (instructorData.schedule_day) {
+    const days = instructorData.schedule_day.split(',').map(d => d.trim());
+    days.forEach(day => {
+      const checkbox = modal.querySelector(`input[value="${day}"]`);
+      if (checkbox) checkbox.checked = true;
+    });
+  }
+  
+  // Parse time from schedule_time (format: "8:00 AM - 5:00 PM")
+  if (instructorData.schedule_time) {
+    const timeMatch = instructorData.schedule_time.match(/(\d+):(\d+)\s*(AM|PM)\s*-\s*(\d+):(\d+)\s*(AM|PM)/);
+    if (timeMatch) {
+      const [, startHour, startMin, startPeriod, endHour, endMin, endPeriod] = timeMatch;
+      
+      // Set start time
+      const startHourSelect = modal.querySelector('#edit_inst_start_hour');
+      const startMinSelect = modal.querySelector('#edit_inst_start_min');
+      const startPeriodSelect = modal.querySelector('#edit_inst_start_period');
+      
+      if (startHourSelect) startHourSelect.value = startHour;
+      if (startMinSelect) startMinSelect.value = startMin;
+      if (startPeriodSelect) startPeriodSelect.value = startPeriod;
+      
+      // Set end time
+      const endHourSelect = modal.querySelector('#edit_inst_end_hour');
+      const endMinSelect = modal.querySelector('#edit_inst_end_min');
+      const endPeriodSelect = modal.querySelector('#edit_inst_end_period');
+      
+      if (endHourSelect) endHourSelect.value = endHour;
+      if (endMinSelect) endMinSelect.value = endMin;
+      if (endPeriodSelect) endPeriodSelect.value = endPeriod;
+    }
+  }
+  
+  // Parse section_handled to get year and section (format: "1-A")
+  if (instructorData.section_handled) {
+    const sectionMatch = instructorData.section_handled.match(/^(\d+)-([A-Z])$/);
+    if (sectionMatch) {
+      const [, year, section] = sectionMatch;
+      
+      const yearSelect = modal.querySelector('#edit_inst_year_level');
+      const sectionSelect = modal.querySelector('#edit_inst_section');
+      
+      if (yearSelect) yearSelect.value = year;
+      if (sectionSelect) sectionSelect.value = section;
+    }
+  }
+  
+  // Populate subject_code field
+  if (instructorData.subject_code) {
+    const subjectCodeInput = modal.querySelector('#edit_inst_subject_code');
+    if (subjectCodeInput) subjectCodeInput.value = instructorData.subject_code;
+  }
+  
   modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.remove();
   });
@@ -1606,12 +1773,45 @@ function showEditInstructorModal(instructorId) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const formData = new FormData(form);
-    const payload = Object.fromEntries(formData.entries());
+    const getVal = (sel) => modal.querySelector(sel)?.value?.trim() || '';
+    const days = Array.from(modal.querySelectorAll('input[name="days[]"]:checked')).map(i => i.value);
+
+    const buildTime = (hSel, mSel, pSel) => {
+      const hh = getVal(hSel);
+      const mm = getVal(mSel) || '00';
+      const pp = getVal(pSel) || 'AM';
+      return hh ? `${hh}:${mm} ${pp}` : '';
+    };
+
+    const startStr = buildTime('#edit_inst_start_hour', '#edit_inst_start_min', '#edit_inst_start_period');
+    const endStr = buildTime('#edit_inst_end_hour', '#edit_inst_end_min', '#edit_inst_end_period');
+    const schedule_time = startStr && endStr ? `${startStr} - ${endStr}` : '';
+
+    // Map form fields to database columns
+    const yearLevel = getVal('#edit_inst_year_level');
+    const section = getVal('#edit_inst_section');
+    const subjectCode = getVal('#edit_inst_subject_code');
+    
+    // Build section_handled as "YEAR-SECTION" format (e.g., "1-A")
+    const section_handled = (yearLevel && section) ? 
+      `${yearLevel}-${section}` : '';
+
+    const payload = {
+      instructor_id: getVal('input[name="instructor_id"]'),
+      first_name: getVal('input[name="first_name"]'),
+      last_name: getVal('input[name="last_name"]'),
+      email: getVal('input[name="email"]'),
+      assigned_subject: getVal('#edit_inst_subject'),
+      subject_code: getVal('#edit_inst_subject_code'),
+      section_handled: section_handled,
+      program: getVal('#edit_inst_program'),
+      schedule_day: days.join(','),
+      schedule_time
+    };
     
     try {
       const basePath = window.location.pathname.split('/pages/')[0] || '';
-      const response = await fetch(`${basePath}/pages/admin/api/instructors/update.php`, {
+      const response = await fetch(`${basePath}/pages/admin/api/instructors/update_noauth.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

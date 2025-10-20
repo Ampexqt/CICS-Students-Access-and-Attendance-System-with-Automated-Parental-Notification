@@ -31,6 +31,7 @@ $lastName = trim($data['last_name'] ?? '');
 $email = trim($data['email'] ?? '');
 $subject = trim($data['assigned_subject'] ?? '');
 $section = trim($data['section_handled'] ?? '');
+$program = trim($data['program'] ?? 'BS-InfoTech');
 $scheduleDay = trim($data['schedule_day'] ?? '');
 $scheduleTime = trim($data['schedule_time'] ?? '');
 
@@ -39,6 +40,7 @@ if (!$instructorId) $errors[] = 'Instructor ID is required';
 if ($firstName === '') $errors[] = 'First name is required';
 if ($lastName === '') $errors[] = 'Last name is required';
 if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Valid email is required';
+if ($program !== 'BS-InfoTech' && $program !== 'BS-InfoSys') $errors[] = 'Invalid program selected';
 
 if ($errors) {
     http_response_code(422);
@@ -63,7 +65,7 @@ try {
     $stmt = $pdo->prepare('
         UPDATE instructor 
         SET first_name = ?, last_name = ?, email = ?, assigned_subject = ?, 
-            section_handled = ?, schedule_day = ?, schedule_time = ?
+            section_handled = ?, program = ?, schedule_day = ?, schedule_time = ?
         WHERE instructor_id = ?
     ');
     $stmt->execute([
@@ -72,6 +74,7 @@ try {
         $email,
         $subject ?: null,
         $section ?: null,
+        $program,
         $scheduleDay ?: null,
         $scheduleTime ?: null,
         $instructorId
