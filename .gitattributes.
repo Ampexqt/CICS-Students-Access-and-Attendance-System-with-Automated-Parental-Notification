@@ -1,0 +1,4 @@
+*.php linguist-language=PHP
+*.hh linguist-vendored
+*.hhi linguist-vendored
+*.hack linguist-vendored
