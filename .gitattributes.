@@ -1,4 +1,7 @@
+# Force GitHub to recognize all PHP files correctly
 *.php linguist-language=PHP
+
+# Ignore or hide any Hack-related files from language stats
 *.hh linguist-vendored
 *.hhi linguist-vendored
 *.hack linguist-vendored
